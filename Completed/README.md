@@ -7,7 +7,7 @@ commands:
  ```
 
 ```bash 
-  bun react-hook-form
+  bun install react-hook-form
 ```
 
 ```bash
@@ -22,7 +22,7 @@ To Run the code:
 ```bash
   bun run dev
 ```
-then go to http://localhost:3000/ in your browser
+then go to http://localhost:5173/ in your browser
 
 Topics to cover:
 - Input types and labels & htmlFor/ids InputTypes.tsx, value on select options
