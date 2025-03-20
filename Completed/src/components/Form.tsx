@@ -12,14 +12,14 @@ const schema = z.object({
     confirmPassword: z.string()
         .min(1, "Confirm Password is required"),
     haveDog: z.boolean(),
-    date: z.coerce.date().refine((date) => {
+    date: z.coerce.date().refine((date) => { {/* coerce converted to type placed after -parse string as .date() refine used for custom logic not covered in zod*/}
         const today = new Date().toISOString() //YYYY-MM-DDTHH:mm:ss.sssZ, works cause string comparison
-        return date?.toISOString() <= today
+        return date.toISOString() <= today
     },"Date cannot be in the Future"), // date is going to be string but we want to parse w/ coerce.date()
-    year: z.enum(["Freshman", "Sophomore", "Other"]).optional(),
+    year: z.enum(["freshman", "sophomore", "other"]).optional(),
 }).refine(data => data.password === data.confirmPassword, {
     message: "Passwords must match",
-    path: ["confirmPassword"]
+    path: ["confirmPassword"] // used to pick which input applied to
 })
 
 type Inputs = z.infer<typeof schema>;
@@ -31,15 +31,17 @@ export function Form() {
     } = useForm<Inputs>({
         resolver: zodResolver(schema)
     });
+
     const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <h2> Survey</h2>
             <div>
-                <label htmlFor="email">Email: </label> {/*screen readers and readability*/}
+                <label htmlFor="email">Email: </label> {/* htmlFor and id primarily screen readers and readability*/}
                 <input type="text" id="email" {...register("email")}/>
             </div>
-            {errors.email && <p>{errors.email.message}</p>}
+            {errors.email && <p>{errors.email.message}</p>} {/*Conditional rendering*/}
             <div>
                 <label htmlFor="password">Password: </label>
                 <input type="password" id="password" {...register("password")}/>
@@ -49,7 +51,7 @@ export function Form() {
                 <label htmlFor="confirmPassword">Confirm Password: </label>
                 <input type="password" id="confirmPassword" {...register("confirmPassword")}/>
             </div>
-            {errors.password && <p>{errors.password.message}</p>}
+            {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
             <div>
                 <label htmlFor="haveDog">Do you have a dog?</label>
                 <input type="checkbox" id="haveDog" {...register("haveDog")}/>
@@ -62,9 +64,9 @@ export function Form() {
             <div>
                 <label>School Year: </label>
                 <select {...register("year")}>
-                    <option>Freshman</option>
-                    <option>Sophomore</option>
-                    <option>Other</option>
+                    <option value="freshman">Freshman</option>
+                    <option value="sophomore">Sophomore</option>
+                    <option value="other">Other</option>
                 </select>
             </div>
             <button type="submit">Submit</button>
